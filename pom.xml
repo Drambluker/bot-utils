@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.vlaskin.bot</groupId>
+	<artifactId>bot-utils</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>Bot Utils</name>
+	<description>Bot Utils</description>
+
+	<properties>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
+
+		<lombok.version>1.18.30</lombok.version>
+		<spring.version>6.1.2</spring.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.pebbletemplates</groupId>
+			<artifactId>pebble-spring-boot-starter</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+	</dependencies>
+
+</project>
