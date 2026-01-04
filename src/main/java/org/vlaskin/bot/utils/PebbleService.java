@@ -1,16 +1,14 @@
-package org.vlaskin.bot.service;
+package org.vlaskin.bot.utils;
 
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 
-@Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PebbleService
 {
     private final PebbleEngine pebbleEngine;
