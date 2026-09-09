@@ -17,6 +17,14 @@
 	<description>Spring Boot starter for rendering bot message templates with Pebble</description>
 	<url>https://github.com/Drambluker/bot-utils</url>
 
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<scm>
 		<connection>scm:git:https://github.com/Drambluker/bot-utils.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/Drambluker/bot-utils.git</developerConnection>
@@ -82,6 +90,31 @@
 						<goals>
 							<goal>jar-no-fork</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-license-files</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}</directory>
+									<includes>
+										<include>LICENSE</include>
+										<include>NOTICE</include>
+									</includes>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
