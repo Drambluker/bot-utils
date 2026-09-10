@@ -42,7 +42,9 @@
 
 	<properties>
 		<java.version>21</java.version>
+		<project.build.outputTimestamp>2026-09-10T07:00:00Z</project.build.outputTimestamp>
 		<jacoco.version>0.8.15</jacoco.version>
+		<maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
 		<pebble.version>4.1.2</pebble.version>
 		<spotbugs-maven-plugin.version>4.10.4.1</spotbugs-maven-plugin.version>
 	</properties>
@@ -79,7 +81,53 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>${project.basedir}</directory>
+				<targetPath>META-INF</targetPath>
+				<includes>
+					<include>LICENSE</include>
+					<include>NOTICE</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
+			<plugin>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>${maven-enforcer-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>enforce-build-environment</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>[3.9.5,)</version>
+								</requireMavenVersion>
+								<requireJavaVersion>
+									<version>[21,)</version>
+								</requireJavaVersion>
+								<dependencyConvergence/>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Automatic-Module-Name>org.vlaskin.bot.utils</Automatic-Module-Name>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>3.4.0</version>
@@ -96,13 +144,13 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy-license-files</id>
-						<phase>process-resources</phase>
+						<id>prepare-javadoc-license-files</id>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
+							<outputDirectory>${project.build.directory}/reports/apidocs/META-INF</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${project.basedir}</directory>
@@ -126,7 +174,15 @@
 				</configuration>
 				<executions>
 					<execution>
+						<id>generate-javadocs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+					</execution>
+					<execution>
 						<id>attach-javadocs</id>
+						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
 						</goals>
