@@ -1,0 +1,82 @@
+name: Publish Maven package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Scan repository history for secrets
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: 'false'
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: 'false'
+          GITLEAKS_VERSION: 8.30.1
+
+      - name: Set up Java 21
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          server-id: github
+
+      - name: Verify release version
+        shell: bash
+        run: |
+          project_version="$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)"
+          tag_version="${GITHUB_REF_NAME#v}"
+          if [[ "$project_version" != "$tag_version" ]]; then
+            echo "Tag $GITHUB_REF_NAME does not match project version $project_version" >&2
+            exit 1
+          fi
+
+      - name: Verify release commit belongs to main
+        shell: bash
+        run: |
+          git fetch --no-tags origin '+refs/heads/main:refs/remotes/origin/main'
+          release_commit="$(git rev-parse --verify "${GITHUB_SHA}^{commit}")"
+          if ! git merge-base --is-ancestor "$release_commit" refs/remotes/origin/main; then
+            echo "Release commit $release_commit does not belong to the main branch" >&2
+            exit 1
+          fi
+
+      - name: Verify project and run static analysis
+        run: >-
+          ./mvnw --batch-mode --no-transfer-progress clean verify
+          spotbugs:check cyclonedx:makeBom
+
+      - name: Scan dependency SBOM
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: sbom
+          scan-ref: target/bom.json
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
+          timeout: 10m
+          version: v0.74.0
+
+      - name: Publish package
+        run: >-
+          ./mvnw --batch-mode --no-transfer-progress
+          -DskipTests -Djacoco.skip=true deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
