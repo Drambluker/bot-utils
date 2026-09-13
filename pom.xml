@@ -11,7 +11,7 @@
 
 	<groupId>org.vlaskin.bot</groupId>
 	<artifactId>bot-utils-starter</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 
 	<name>Bot Utils</name>
 	<description>Spring Boot starter for rendering bot message templates with Pebble</description>
