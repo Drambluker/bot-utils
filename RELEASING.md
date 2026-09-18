@@ -13,7 +13,8 @@ Parent POM, core и starter публикуются в GitHub Packages одним
 1. Обновите `<version>` в корневом `pom.xml` и версии `<parent>` в
    `bot-utils-core/pom.xml` и `bot-utils-starter/pom.xml` одним номером.
    Релизная версия не должна содержать `-SNAPSHOT`.
-2. Обновите примеры версии в документации.
+2. Обновите примеры версии в документации. В `CHANGELOG.md` перенесите
+   изменения из раздела «Следующая версия» в раздел с номером релиза.
 3. Запустите `./mvnw clean verify spotbugs:check cyclonedx:makeBom`.
 4. Создайте отдельный коммит, например
    `git commit -am "[release] Prepare 1.1.0"`, и отправьте его в `main`.
