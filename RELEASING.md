@@ -1,6 +1,7 @@
 # Выпуск Maven-пакета
 
-Пакет публикуется в GitHub Packages автоматически по тегу `v<version>`.
+Parent POM, core и starter публикуются в GitHub Packages одним Maven reactor
+автоматически по тегу `v<version>`.
 Версия в теге должна точно совпадать с `project.version` в `pom.xml`.
 
 ## Подготовка релиза
@@ -9,8 +10,9 @@
 изменения API повышает PATCH, обратно совместимая возможность — MINOR, ломающее
 изменение — MAJOR.
 
-1. Обновите `<version>` в корневом `pom.xml`. Релизная версия не должна
-   содержать `-SNAPSHOT`.
+1. Обновите `<version>` в корневом `pom.xml` и версии `<parent>` в
+   `bot-utils-core/pom.xml` и `bot-utils-starter/pom.xml` одним номером.
+   Релизная версия не должна содержать `-SNAPSHOT`.
 2. Обновите примеры версии в документации.
 3. Запустите `./mvnw clean verify spotbugs:check cyclonedx:makeBom`.
 4. Создайте отдельный коммит, например
@@ -26,7 +28,8 @@
    ```
 
 Workflow `Publish Maven package` проверит историю, release-коммит, тесты,
-SpotBugs и зависимости, затем опубликует основной JAR, исходники и JavaDoc.
+SpotBugs и агрегированный SBOM, затем опубликует parent POM и для каждого
+модуля JAR, исходники, JavaDoc и SBOM.
 Обновляйте потребителей только после появления версии в разделе `Packages`.
 
 Опубликованная версия неизменяема. Для следующего изменения назначьте новый
@@ -40,11 +43,11 @@ docker run --rm -v "$PWD:/repo:ro" \
   ghcr.io/gitleaks/gitleaks:v8.30.1 \
   detect --source /repo --redact --no-banner
 
-./mvnw -DskipTests cyclonedx:makeBom
+./mvnw -DskipTests package
 docker run --rm -v "$PWD:/repo:ro" \
   aquasec/trivy:0.74.0 \
   sbom --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 \
-  /repo/target/bom.json
+  /repo/target/classes/META-INF/sbom/application.cdx.json
 ```
 
 ## Обязательная настройка GitHub
@@ -66,6 +69,8 @@ updates, Secret scanning и Push protection. Для релизных тегов 
 > **Только для крайнего случая.** Удаление публичной версии может сломать чужие
 > сборки. Почти всегда правильнее выпустить новую PATCH-версию.
 
+Считайте parent, core и starter одним релизным набором: удаление parent или
+core ломает загрузку starter. При восстановлении возвращайте весь набор.
 Версию можно удалить через страницу пакета: `Packages` → пакет → версия →
 `Delete version`. Перед удалением запишите Maven-координаты, номер версии,
 commit SHA и tag SHA.

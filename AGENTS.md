@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This repository contains a Java 21 Spring Boot starter for rendering bot messages with Pebble. Production code lives in `src/main/java/org/vlaskin/bot/utils`; keep new classes in that package unless a cohesive subpackage is warranted. Spring Boot auto-configuration metadata belongs in `src/main/resources/META-INF/spring`. Tests mirror the production package under `src/test/java`, while test-only Pebble templates live in `src/test/resources/templates`. GitHub Actions workflows are in `.github/workflows`, and release procedures are documented in `RELEASING.md`.
+This Java 21 Maven reactor contains `bot-utils-core` (callback codecs and keyed locks, no runtime dependencies) and `bot-utils-starter` (Spring Boot and Pebble). Sources and tests use `<module>/src/main/java` and `<module>/src/test/java`. Callback codecs belong in `org.vlaskin.bot.utils.callback`, keyed locks in `org.vlaskin.bot.utils.concurrent`, and rendering services in `org.vlaskin.bot.utils`. Keep shared utilities independent of Telegram, MAX, and application entities. Auto-configuration metadata and test templates belong in the starter's resources. CI workflows are in `.github/workflows`; release procedures are documented in `RELEASING.md`.
 
 ## Build, Test, and Development Commands
 
@@ -13,7 +13,7 @@ Use the checked-in Maven wrapper so local and CI behavior stays consistent. Java
 - `./mvnw -DskipTests package spotbugs:check` builds the JAR and runs static analysis.
 - `./mvnw clean verify spotbugs:check cyclonedx:makeBom` reproduces the full pre-release validation.
 
-Build output and reports are written to `target/`; do not commit them.
+Build output and reports are written to each module's `target/`; the aggregate SBOM is at `target/classes/META-INF/sbom/application.cdx.json`. Do not commit generated output.
 
 ## Coding Style & Naming Conventions
 
@@ -21,7 +21,7 @@ Follow the existing Java style: four-space indentation, braces on their own line
 
 ## Testing Guidelines
 
-Tests use JUnit 5, AssertJ, and Spring Boot's `ApplicationContextRunner`. Name test classes `*Test` and test methods by behavior, for example `rejectsBlankTemplateName`. Add unit tests for validation and rendering logic, plus context-runner tests for auto-configuration changes. `verify` requires at least 90% line coverage and 80% branch coverage.
+Tests use JUnit 5 and AssertJ; only the starter uses Spring Boot's `ApplicationContextRunner`. Name test classes `*Test` and methods by behavior. Concurrent tests must release held locks before waiting for workers and use bounded termination. Add tests for validation, interruption, rendering, and auto-configuration. `verify` requires at least 90% line and 80% branch coverage in each module.
 
 ## Commit & Pull Request Guidelines
 

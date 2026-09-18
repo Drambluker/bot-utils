@@ -10,11 +10,16 @@
 	</parent>
 
 	<groupId>org.vlaskin.bot</groupId>
-	<artifactId>bot-utils-starter</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<artifactId>bot-utils-parent</artifactId>
+	<version>1.1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modules>
+		<module>bot-utils-core</module>
+		<module>bot-utils-starter</module>
+	</modules>
 
 	<name>Bot Utils</name>
-	<description>Spring Boot starter for rendering bot message templates with Pebble</description>
+	<description>Shared bot utilities and Spring Boot configuration for message templates</description>
 	<url>https://github.com/Drambluker/bot-utils</url>
 
 	<licenses>
@@ -49,44 +54,13 @@
 		<spotbugs-maven-plugin.version>4.10.4.1</spotbugs-maven-plugin.version>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-autoconfigure</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-autoconfigure-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.pebbletemplates</groupId>
-			<artifactId>pebble</artifactId>
-			<version>${pebble.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.pebbletemplates</groupId>
-			<artifactId>pebble-spring-boot-starter</artifactId>
-			<version>${pebble.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
 	<build>
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src/main/resources</directory>
 			</resource>
 			<resource>
-				<directory>${project.basedir}</directory>
+				<directory>${maven.multiModuleProjectDirectory}</directory>
 				<targetPath>META-INF</targetPath>
 				<includes>
 					<include>LICENSE</include>
@@ -153,7 +127,7 @@
 							<outputDirectory>${project.build.directory}/reports/apidocs/META-INF</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${project.basedir}</directory>
+									<directory>${maven.multiModuleProjectDirectory}</directory>
 									<includes>
 										<include>LICENSE</include>
 										<include>NOTICE</include>
@@ -171,6 +145,7 @@
 				<configuration>
 					<doclint>all,-missing</doclint>
 					<failOnWarnings>true</failOnWarnings>
+					<detectOfflineLinks>false</detectOfflineLinks>
 				</configuration>
 				<executions>
 					<execution>
