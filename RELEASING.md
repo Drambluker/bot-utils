@@ -65,6 +65,34 @@ docker run --rm -v "$PWD:/repo:ro" \
 updates, Secret scanning и Push protection. Для релизных тегов `v*` создайте
 отдельное правило, запрещающее их изменение и удаление.
 
+## Сайт документации
+
+1. В репозитории откройте `Settings → Pages` и выберите
+   `Build and deployment → Source → GitHub Actions`.
+2. В `Settings → Actions → General` убедитесь, что политика репозитория
+   разрешает используемые GitHub Actions. Отдельный PAT для сайта не нужен.
+3. Отправьте изменения в `main` либо запустите `Publish Maven site`
+   через `Actions → Run workflow`, выбрав ветку `main`.
+4. Проверьте задания `build` и `deploy`. Адрес опубликованного сайта:
+   `https://drambluker.github.io/bot-utils/`.
+   Если environment `github-pages` требует подтверждения, одобрите deployment.
+5. В `Settings → Environments → github-pages → Deployment branches and tags`
+   выберите `Selected branches and tags` и добавьте правило типа `Branch`
+   с именем `main`. Не добавляйте разрешения для других веток или тегов.
+   Это защищает публикацию даже при изменении workflow в другой ветке;
+   подробнее — в [документации GitHub](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments).
+
+Workflow публикует сайт текущей ветки `main`, включая ещё не выпущенные
+изменения; он не публикует Maven-пакеты. В pull request сайт только собирается
+в рамках существующей проверки `Verify / test`.
+При ручном запуске из другой ветки или тега задания `build` и `deploy`
+пропускаются. Для проверки других веток используйте pull request.
+
+Для локальной проверки выполните `./mvnw clean verify site site:stage`.
+Откройте `target/staging/ru/index.html`: здесь собраны страницы обоих модулей
+с рабочими относительными ссылками. Исходные тексты берутся из README,
+USAGE, CHANGELOG и этого файла; редактировать HTML в `target` не нужно.
+
 ## Удаление и восстановление
 
 > **Только для крайнего случая.** Удаление публичной версии может сломать чужие

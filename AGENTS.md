@@ -12,8 +12,11 @@ Use the checked-in Maven wrapper so local and CI behavior stays consistent. Java
 - `./mvnw clean verify` performs the standard build, generates Javadocs and JaCoCo reports, and enforces coverage.
 - `./mvnw -DskipTests package spotbugs:check` builds the JAR and runs static analysis.
 - `./mvnw clean verify spotbugs:check cyclonedx:makeBom` reproduces the full pre-release validation.
+- `./mvnw clean verify site site:stage` builds and stages the complete multi-module documentation site in `target/staging/`.
 
 Build output and reports are written to each module's `target/`; the aggregate SBOM is at `target/classes/META-INF/sbom/application.cdx.json`. Do not commit generated output.
+
+The Maven site descriptor is in `src/site/site.xml`. Root README, USAGE, CHANGELOG, and RELEASING Markdown files are the only sources of prose for the site; do not maintain separate copies. Verify builds the site for pull requests, and Pages publishes from main without releasing Maven packages.
 
 ## Coding Style & Naming Conventions
 

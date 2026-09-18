@@ -52,3 +52,6 @@ Core предоставляет блокировки по ключу, callback-�
 
 - [История изменений](CHANGELOG.md).
 - [Публикация, удаление и восстановление пакетов](RELEASING.md).
+
+Локальная сборка сайта: `./mvnw clean verify site site:stage`;
+результат — `target/staging/ru/index.html`.

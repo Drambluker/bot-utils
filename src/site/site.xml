@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site xmlns="http://maven.apache.org/SITE/2.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/SITE/2.0.0 https://maven.apache.org/xsd/site-2.0.0.xsd"
+      name="Bot Utils">
+    <bannerLeft name="Bot Utils" href="https://drambluker.github.io/bot-utils/"/>
+    <version/>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>2.1.0</version>
+    </skin>
+    <body>
+        <links><item name="GitHub" href="https://github.com/Drambluker/bot-utils"/></links>
+        <menu name="Документация" inherit="top">
+            <item name="Главная" href="index.html"/>
+            <item name="Использование" href="USAGE.html"/>
+            <item name="История изменений" href="CHANGELOG.html"/>
+            <item name="Релизы" href="RELEASING.html"/>
+        </menu>
+        <menu name="Модули" inherit="top">
+            <item name="Core" href="bot-utils-core/index.html"/>
+            <item name="Starter" href="bot-utils-starter/index.html"/>
+        </menu>
+        <menu ref="reports"/>
+    </body>
+</site>

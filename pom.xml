@@ -43,6 +43,10 @@
 			<name>GitHub Packages</name>
 			<url>https://maven.pkg.github.com/Drambluker/bot-utils</url>
 		</repository>
+		<site>
+			<id>github-pages</id>
+			<url>https://drambluker.github.io/bot-utils/</url>
+		</site>
 	</distributionManagement>
 
 	<properties>
@@ -69,6 +73,48 @@
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.22.0</version>
+				<configuration>
+					<locales>ru</locales>
+					<stagingDirectory>${maven.multiModuleProjectDirectory}/target/staging</stagingDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.2.0</version>
+				<inherited>false</inherited>
+				<executions>
+					<execution>
+						<id>prepare-site-markdown</id>
+						<phase>pre-site</phase>
+						<goals><goal>run</goal></goals>
+						<configuration>
+							<target>
+								<!-- Используем корневые Markdown-файлы без отдельных копий документации. -->
+								<copy file="${project.basedir}/README.md"
+									tofile="${project.build.directory}/generated-site/ru/markdown/index.md" encoding="UTF-8">
+									<filterchain>
+										<replacestring from="](USAGE.md)" to="](USAGE.html)"/>
+										<replacestring from="](CHANGELOG.md)" to="](CHANGELOG.html)"/>
+										<replacestring from="](RELEASING.md)" to="](RELEASING.html)"/>
+									</filterchain>
+								</copy>
+								<copy todir="${project.build.directory}/generated-site/ru/markdown" encoding="UTF-8">
+									<fileset dir="${project.basedir}" includes="USAGE.md,CHANGELOG.md,RELEASING.md"/>
+									<filterchain>
+										<replacestring from="](RELEASING.md)" to="](RELEASING.html)"/>
+									</filterchain>
+								</copy>
+								<copy todir="${project.reporting.outputDirectory}/ru">
+									<fileset dir="${project.basedir}" includes="LICENSE,NOTICE"/>
+								</copy>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<version>${maven-enforcer-plugin.version}</version>
@@ -231,5 +277,38 @@
 			</plugin>
 		</plugins>
 	</build>
+	<reporting>
+		<excludeDefaults>true</excludeDefaults>
+		<plugins>
+			<plugin>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>3.9.0</version>
+				<reportSets>
+					<reportSet><reports><report>index</report></reports></reportSet>
+				<reportSet>
+					<id>modules</id>
+					<inherited>false</inherited>
+					<reports><report>modules</report></reports>
+				</reportSet>
+			</reportSets>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.12.0</version>
+				<configuration>
+					<doclint>all,-missing</doclint>
+					<failOnWarnings>true</failOnWarnings>
+					<detectOfflineLinks>false</detectOfflineLinks>
+				</configuration>
+				<reportSets><reportSet><reports><report>javadoc</report></reports></reportSet></reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<reportSets><reportSet><reports><report>report</report></reports></reportSet></reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 
 </project>
