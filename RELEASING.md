@@ -17,15 +17,15 @@ Parent POM, core и starter публикуются в GitHub Packages одним
    изменения из раздела «Следующая версия» в раздел с номером релиза.
 3. Запустите `./mvnw clean verify spotbugs:check cyclonedx:makeBom`.
 4. Создайте отдельный коммит, например
-   `git commit -am "[release] Prepare 1.1.0"`, и отправьте его в `main`.
+   `git commit -am "[release] Prepare 1.1.1"`, и отправьте его в `main`.
 5. Дождитесь успешного завершения обязательных проверок.
 6. Создайте аннотированный тег на проверенном коммите и отправьте его:
 
    ```bash
    git switch main
    git pull --ff-only
-   git tag -a v1.1.0 -m 'Release 1.1.0'
-   git push origin v1.1.0
+   git tag -a v1.1.1 -m 'Release 1.1.1'
+   git push origin v1.1.1
    ```
 
 Workflow `Publish Maven package` проверит историю, release-коммит, тесты,
@@ -122,10 +122,10 @@ commit SHA и tag SHA.
    проверенном release-коммите:
 
    ```bash
-   git push origin :refs/tags/v1.1.0
-   git tag --delete v1.1.0
-   git tag -a v1.1.0 -m 'Emergency replacement of 1.1.0'
-   git push origin v1.1.0
+   git push origin :refs/tags/v1.1.1
+   git tag --delete v1.1.1
+   git tag -a v1.1.1 -m 'Emergency replacement of 1.1.1'
+   git push origin v1.1.1
    ```
 
 4. Сразу восстановите защиту тегов и убедитесь, что ruleset снова активен.
